@@ -1,11 +1,11 @@
 # Gitlab Migration
-Script to migrate Gitlab groups and their projects from one Gitlab instance to another. 
+Script to migrate Gitlab groups and their projects from one Gitlab instance to another.
 
 ## Requirements
 * Bash (4.0 or newer)
 * jq
 
-## Usage ## 
+## Usage ##
 * Create local file `.secrets` and add a [Personal Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) for the source Gitlab instance in the first line and a Personal Access Token for the target Gitlab instance in the second line. Both tokens need the `api` scope. Example:
     ```
   $ cat .secrets
@@ -15,10 +15,7 @@ Script to migrate Gitlab groups and their projects from one Gitlab instance to a
 * Create the target group in the target Gitlab instance. **CAUTION: You should always make sure that you set the appropriate visibility level and other important security settings on the target group before you start the migration so that no sensitive data is exposed by accident!** See details on additional protective default settings at [Supported Features](#supported-features).
 * Run the migration script:
   ```bash
-  $ SOURCE_GITLAB=git.mycompany.com TARGET_GITLAB=gitlab.com ./migrate.sh
-  Enter source group path at git.mycompany.com (e.g. project/team): 
-  Enter target group path at gitlab.com (e.g. mycompany/project/team): 
-  Archive original projects at git.mycompany.com after migration? (yes/no): 
+  $ ./migrate.sh --source_gitlab=gitlab.mycompany.com --source_path=migration/group --target_gitlab=gitlab.com --target_path=migration/group
   ...
   ```
 
@@ -31,14 +28,13 @@ Script to migrate Gitlab groups and their projects from one Gitlab instance to a
 
 ## Supported Features ##
 * Groups including nested groups. See [Group API documentation](https://docs.gitlab.com/ee/api/groups.html#list-groups) for supported attributes.
-The following attributes will be overwritten with some restrictive values to not expose sensitive data by default. This is especially handy if you're moving from a private on-premise instance to Gitlab.com. 
+The following attributes will be overwritten with some restrictive values to not expose sensitive data by default. This is especially handy if you're moving from a private on-premise instance to Gitlab.com.
 You can always change the settings back after the migration manually or edit the script to not override these attributes if you want to keep the original settings.
   * `visibilty=private`
   * `request_access_enabled=false`
-  * `require_two_factor_authentication=true`
   * `share_with_group_lock=true`
 * Project Export Package. See [Gitlab Import/Export documentation](https://docs.gitlab.com/ee/user/project/settings/import_export.html#exported-contents) for details
-* Optional:
+* Optional (`./migrate.sh --help` for all options):
   * Group CI variables
   * Group badges
   * Project CI variables
@@ -46,7 +42,7 @@ You can always change the settings back after the migration manually or edit the
   * Add link to new location in source project description
   * Archive source projects after migration
 
-# License # 
+# License #
 Copyright (c) 2020 K - Mail Order GmbH & Co. KG
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -57,5 +53,3 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ## Legal Notice ##
 GIT is a trademark of Software Freedom Conservancy. Gitlab is a trademark of Gitlab B.V.
-
-
